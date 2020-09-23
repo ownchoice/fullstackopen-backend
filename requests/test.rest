@@ -29,4 +29,12 @@ content-type: application/json
     "number": "764-0194863"
 }
 ###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "number": "764-0194863"
+}
+###
+
 

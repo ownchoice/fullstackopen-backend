@@ -55,18 +55,23 @@ app.get('/api/persons/:id', (req, res) => {
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   persons = persons.filter(person => person.id !== id)
-
   response.status(204).end()
 })
 
 app.post('/api/persons', (request, response) => {
+  const body = request.body
+  name_list = persons.map(person => person.name)
+  if (!body.name || !body.number) {
+    return response.status(404).json({error: 'You must provide both a valid name and number.'})
+  } else if (name_list.includes(body.name)) {
+    return response.status(404).json({error: 'Name already exists.'})
+  }
   const newId = Math.ceil(Math.random() * 99999999)
   const id_list = persons.map(person => person.id)
   while (id_list.includes(newId)) {
     const newId = Math.ceil(Math.random() * 99999999)
   }
   // console.log(newId);
-  const body = request.body
   const newPerson = {
     id: newId,
     name: body.name,
