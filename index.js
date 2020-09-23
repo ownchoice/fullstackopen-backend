@@ -31,11 +31,15 @@ let persons = [
   },
 ]
 
-app.get(
-  '/api/persons', (req, res) => {
-    res.json(persons)
-  }
-  )
+app.get('/api/persons', (req, res) => {
+  res.json(persons)
+})
+
+app.get('/info', (req, res) => {
+  const datenow = new Date(Date.now())
+  const datestr = datenow.toLocaleDateString('es-AR')
+  res.send(`<p>Phonebook has infor for ${persons.length} people.</p><p>${datenow}</p>`)
+})
 
 const PORT = 3001
 app.listen(PORT)
