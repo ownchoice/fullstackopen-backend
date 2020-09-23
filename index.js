@@ -1,3 +1,4 @@
+const { response } = require('express')
 const express = require('express')
 const app = express()
 
@@ -39,6 +40,16 @@ app.get('/info', (req, res) => {
   const datenow = new Date(Date.now())
   const datestr = datenow.toLocaleDateString('es-AR')
   res.send(`<p>Phonebook has infor for ${persons.length} people.</p><p>${datenow}</p>`)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const person = persons.find(person => person.id === id)
+  if (person) {
+    res.json(person)
+  } else {
+    res.status(404).end()
+  }
 })
 
 const PORT = 3001
