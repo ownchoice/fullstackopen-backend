@@ -21,3 +21,12 @@ DELETE http://localhost:3001/api/persons/1
 DELETE http://localhost:3001/api/persons/6
 
 ###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "Nuevo contacto",
+    "number": "764-0194863"
+}
+###
+

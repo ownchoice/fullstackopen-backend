@@ -59,6 +59,26 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
+app.post('/api/persons', (request, response) => {
+  const newId = Math.ceil(Math.random() * 99999999)
+  const id_list = persons.map(person => person.id)
+  while (id_list.includes(newId)) {
+    const newId = Math.ceil(Math.random() * 99999999)
+  }
+  // console.log(newId);
+  const body = request.body
+  const newPerson = {
+    id: newId,
+    name: body.name,
+    number: body.number,
+  }
+  // console.log(request.body);
+  // persons = [ ...persons, newPerson ]
+  persons = persons.concat(newPerson)
+  console.log(persons);
+  response.json(newPerson)
+})
+
 const PORT = 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
