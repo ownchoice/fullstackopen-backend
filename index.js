@@ -1,6 +1,9 @@
-const http = require('http');
+const express = require('express')
+const app = express()
 
-let notes = [
+app.use(express.json())
+
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -27,11 +30,12 @@ let notes = [
     number: "453-171424",
   },
 ]
-const app = http.createServer(
-  (request, response) => {
-  response.writeHead(200, { 'Content-Type': 'application/json' })
-  response.end(JSON.stringify(notes))}
-)
+
+app.get(
+  '/api/persons', (req, res) => {
+    res.json(persons)
+  }
+  )
 
 const PORT = 3001
 app.listen(PORT)
