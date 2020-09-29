@@ -3,8 +3,6 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
-// 3.9 phonebook backend step9
-
 app.use(cors())
 
 app.use(express.static('build'))
