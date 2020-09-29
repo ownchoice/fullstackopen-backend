@@ -61,6 +61,11 @@ let persons = [
     name: "Raúl Was Here",
     number: "453-171424",
   },
+  {
+    id: 6,
+    name: "Solo en el servidor",
+    number: "453-171424",
+  }
 ]
 
 app.get('/api/persons', (req, res) => {
