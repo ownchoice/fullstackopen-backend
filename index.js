@@ -2,14 +2,41 @@ const { response } = require('express')
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const mongoose = require('mongoose')
+
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const password = ''
+const url =
+`mongodb+srv://FirstUser_Test01:${password}@cluster0.f1yw4.mongodb.net/phonebook-app?retryWrites=true&w=majority`
+// const url = 'mongodb+srv://FirstUser_Test01:<password>@cluster0.f1yw4.mongodb.net/phonebook-app?retryWrites=true&w=majority'
+
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
+})
+
+const Person = mongoose.model('Person', personSchema)
+
+personSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
+
 
 app.use(cors())
 
 app.use(express.static('build'))
 
+app.use(express.json())
+
 // const morgan = require('morgan')
 
-app.use(express.json())
 // app.use(morgan('tiny'))
 
 // morgan.token('mitokenpropio', function (req, res) { return JSON.stringify(req.body) })
@@ -68,8 +95,10 @@ let persons = [
   }
 ]
 
-app.get('/api/persons', (req, res) => {
-  res.json(persons)
+app.get('/api/persons', (request, response) => {
+  Person.find({}).then(people => {
+    response.json(people)
+  }).catch(errMsg => console.log('Error', errMsg))
 })
 
 app.get('/info', (req, res) => {
