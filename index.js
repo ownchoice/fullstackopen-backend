@@ -34,38 +34,38 @@ app.use(express.json())
 //   }
 // }))
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "351-7891777",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "4365-41278965",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "73-16-4635892",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendick",
-    number: "63-01-78965",
-  },
-  {
-    id: 5,
-    name: "Raúl Was Here",
-    number: "453-171424",
-  },
-  {
-    id: 6,
-    name: "Solo en el servidor",
-    number: "453-171424",
-  }
-]
+// let persons = [
+//   {
+//     id: 1,
+//     name: "Arto Hellas",
+//     number: "351-7891777",
+//   },
+//   {
+//     id: 2,
+//     name: "Ada Lovelace",
+//     number: "4365-41278965",
+//   },
+//   {
+//     id: 3,
+//     name: "Dan Abramov",
+//     number: "73-16-4635892",
+//   },
+//   {
+//     id: 4,
+//     name: "Mary Poppendick",
+//     number: "63-01-78965",
+//   },
+//   {
+//     id: 5,
+//     name: "Raúl Was Here",
+//     number: "453-171424",
+//   },
+//   {
+//     id: 6,
+//     name: "Solo en el servidor",
+//     number: "453-171424",
+//   }
+// ]
 
 app.get('/api/persons', (request, response, next) => {
   Person.find({})
@@ -78,7 +78,10 @@ app.get('/api/persons', (request, response, next) => {
 app.get('/info', (request, response) => {
   const datenow = new Date(Date.now())
   const datestr = datenow.toLocaleDateString('es-AR')
-  response.send(`<p>Phonebook has infor for ${persons.length} people.</p><p>${datenow}</p>`)
+  Person.find({}).then(contacts => {
+    console.log(contacts);
+    response.send(`<p>Phonebook has ${contacts.length} contacts.</p><p>${datenow}</p>`)
+  })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -90,9 +93,6 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-  // const id = Number(request.params.id)
-  // persons = persons.filter(person => person.id !== id)
-  // response.status(204).end()
   Person.findByIdAndRemove(request.params.id)
     .then(result => {
       response.status(204).end()
@@ -103,13 +103,15 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-  name_list = persons.map(person => person.name)
+  // name_list = persons.map(person => person.name)
 
   if (!body.name || !body.number) {
     return response.status(400).json({error: 'You must provide both a valid name and number.'})
-  } else if (name_list.includes(body.name)) {
-    return response.status(400).json({error: 'Name already exists.'})
   }
+  
+  // if (name_list.includes(body.name)) {
+  //   return response.status(400).json({error: 'Name already exists.'})
+  // }
 
   const newPerson = new Person({
     name: body.name,
