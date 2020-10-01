@@ -93,6 +93,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .then(result => {
       response.status(204).end()
     })
+    
     .catch(error => next(error))
 })
 
