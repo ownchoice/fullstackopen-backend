@@ -80,14 +80,6 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  // const id = Number(req.params.id)
-  // const person = persons.find(person => person.id === id)
-  // if (person) {
-  //   res.json(person)
-  // } else {
-  //   res.status(404).end()
-  // }
-
   Person.findById(request.params.id).then(personFound => {
     response.json(personFound)
   })
@@ -110,14 +102,6 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({error: 'Name already exists.'})
   }
 
-  // const newId = Math.ceil(Math.random() * 99999999)
-  // const id_list = persons.map(person => person.id)
-  // while (id_list.includes(newId)) {
-  //   const newId = Math.ceil(Math.random() * 99999999)
-  // }
-  // console.log(newId);
-
-
   const newPerson = new Person({
     name: body.name,
     number: body.number,
@@ -127,11 +111,6 @@ app.post('/api/persons', (request, response) => {
     response.json(savedPerson)
   })
 
-  // console.log(request.body);
-  // persons = [ ...persons, newPerson ]
-  // persons = persons.concat(newPerson)
-  // console.log(persons);
-  // response.json(newPerson)
 })
 
 const PORT = process.env.PORT || 3001
