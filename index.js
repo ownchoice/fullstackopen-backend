@@ -7,17 +7,12 @@ const mongoose = require('mongoose')
 const Person = require('./models/person')
 
 app.use(cors())
-
 app.use(express.static('build'))
-
 app.use(express.json())
 
 // const morgan = require('morgan')
-
 // app.use(morgan('tiny'))
-
 // morgan.token('mitokenpropio', function (req, res) { return JSON.stringify(req.body) })
-
 // app.use(morgan(function (tokens, req, res) {
 //   if (tokens.method(req, res) === 'POST') {
 //     return [
