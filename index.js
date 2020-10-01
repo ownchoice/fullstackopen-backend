@@ -1,33 +1,10 @@
+require('dotenv').config()
 const { response } = require('express')
 const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
-
-// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
-const password = ''
-const url =
-`mongodb+srv://FirstUser_Test01:${password}@cluster0.f1yw4.mongodb.net/phonebook-app?retryWrites=true&w=majority`
-// const url = 'mongodb+srv://FirstUser_Test01:<password>@cluster0.f1yw4.mongodb.net/phonebook-app?retryWrites=true&w=majority'
-
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
-})
-
-const Person = mongoose.model('Person', personSchema)
-
-personSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
-
-
+const Person = require('./models/person')
 
 app.use(cors())
 
@@ -101,20 +78,24 @@ app.get('/api/persons', (request, response) => {
   }).catch(errMsg => console.log('Error', errMsg))
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (request, response) => {
   const datenow = new Date(Date.now())
   const datestr = datenow.toLocaleDateString('es-AR')
-  res.send(`<p>Phonebook has infor for ${persons.length} people.</p><p>${datenow}</p>`)
+  response.send(`<p>Phonebook has infor for ${persons.length} people.</p><p>${datenow}</p>`)
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
+app.get('/api/persons/:id', (request, response) => {
+  // const id = Number(req.params.id)
+  // const person = persons.find(person => person.id === id)
+  // if (person) {
+  //   res.json(person)
+  // } else {
+  //   res.status(404).end()
+  // }
+
+  Person.findById(request.params.id).then(personFound => {
+    response.json(personFound)
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -125,28 +106,37 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
+
   name_list = persons.map(person => person.name)
+
   if (!body.name || !body.number) {
-    return response.status(404).json({error: 'You must provide both a valid name and number.'})
+    return response.status(400).json({error: 'You must provide both a valid name and number.'})
   } else if (name_list.includes(body.name)) {
-    return response.status(404).json({error: 'Name already exists.'})
+    return response.status(400).json({error: 'Name already exists.'})
   }
-  const newId = Math.ceil(Math.random() * 99999999)
-  const id_list = persons.map(person => person.id)
-  while (id_list.includes(newId)) {
-    const newId = Math.ceil(Math.random() * 99999999)
-  }
+
+  // const newId = Math.ceil(Math.random() * 99999999)
+  // const id_list = persons.map(person => person.id)
+  // while (id_list.includes(newId)) {
+  //   const newId = Math.ceil(Math.random() * 99999999)
+  // }
   // console.log(newId);
-  const newPerson = {
-    id: newId,
+
+
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
-  }
+  })
+  
+  newPerson.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
+
   // console.log(request.body);
   // persons = [ ...persons, newPerson ]
-  persons = persons.concat(newPerson)
-  console.log(persons);
-  response.json(newPerson)
+  // persons = persons.concat(newPerson)
+  // console.log(persons);
+  // response.json(newPerson)
 })
 
 const PORT = process.env.PORT || 3001
