@@ -67,10 +67,12 @@ let persons = [
   }
 ]
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(people => {
-    response.json(people)
-  })
+app.get('/api/persons', (request, response, next) => {
+  Person.find({})
+    .then(people => {
+      response.json(people)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/info', (request, response) => {
@@ -79,10 +81,12 @@ app.get('/info', (request, response) => {
   response.send(`<p>Phonebook has infor for ${persons.length} people.</p><p>${datenow}</p>`)
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  Person.findById(request.params.id).then(personFound => {
-    response.json(personFound)
-  })
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(personFound => {
+      response.json(personFound)
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -93,11 +97,10 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .then(result => {
       response.status(204).end()
     })
-    
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   name_list = persons.map(person => person.name)
@@ -113,9 +116,12 @@ app.post('/api/persons', (request, response) => {
     number: body.number,
   })
   
-  newPerson.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+  newPerson
+    .save()
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 
 })
 
