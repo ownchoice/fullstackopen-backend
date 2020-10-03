@@ -3,7 +3,7 @@ const { response } = require('express')
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
+// const mongoose = require('mongoose')
 const Person = require('./models/person')
 
 app.use(cors())
@@ -79,8 +79,8 @@ app.get('/info', (request, response) => {
   const datenow = new Date(Date.now())
   const datestr = datenow.toLocaleDateString('es-AR')
   Person.find({}).then(contacts => {
-    console.log(contacts);
-    response.send(`<p>Phonebook has ${contacts.length} contacts.</p><p>${datenow}</p>`)
+    console.log(contacts)
+    response.send(`<p>Phonebook has ${contacts.length} contacts.</p><p>${datenow}</p><p>${datestr}</p>`)
   })
 })
 
